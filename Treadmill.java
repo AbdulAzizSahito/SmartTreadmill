@@ -1,27 +1,37 @@
-/ Subclass(Treadmill)
-class Treadmill extends ElectronicAppliance{
-    private Motor motor;       // Composition
-    private User user;   //Aggregation
+class Treadmill extends ElectronicAppliance {
+    private Motor motor;
+    private ControlPanel panel;
+    private SafetySystem safety;
+    private User user;
 
-    public Treadmill(String brand, int power, User user){
-        super(brand, power);
+    public Treadmill(String brand, int powerRating, User user){
+        super(brand, powerRating);
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null.");
+        }
         this.motor = new Motor();
+        this.panel = new ControlPanel();
+        this.safety = new SafetySystem();
         this.user = user;
     }
-    public void startWorkout() throws InterruptedException{
-        System.out.println("Welcome, "+ user.getInfo());
+
+    public void startWorkout(int warmupSec, int runSec, int cooldownSec) throws InterruptedException{
+        System.out.println("\n Hello, " + user.getDetails());
         turnOn();
-        motor.startMotor();
+        panel.displayMenu();
+        safety.checkStatus();
+        motor.runMotor();
 
-        Thread warmup = new Thread(new WorkoutPhase("Warm-up", 3));
-        Thread run = new Thread(new WorkoutPhase("Running", 5));
-        Thread cooldown = new Thread(new WorkoutPhase("Cooldown", 2));
+        Thread warmup = new Thread(new WorkoutPhase("Warm-up", warmupSec));
+        Thread running = new Thread(new WorkoutPhase("Running", runSec));
+        Thread cooldown = new Thread(new WorkoutPhase("Cooldown", cooldownSec));
 
-        warmup.start();  warmup.join();
-        run.start(); run.join();
+        warmup.start(); warmup.join();
+        running.start(); running.join();
         cooldown.start(); cooldown.join();
 
-        System.out.println("Session complete.");
+        System.out.println("\n Session completed successfully!");
         turnOff();
     }
+
 }
