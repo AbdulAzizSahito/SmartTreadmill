@@ -1,19 +1,20 @@
 // Thread Class(Polymorphism).
-class WorkoutPhase implements Runnable{
-    private String phaseName;
-    private int seconds;
+class WorkoutPhase implements Runnable {
+    private String phase;
+    private int durationInSeconds;
 
-    public WorkoutPhase(String phaseName, int seconds){
-        this.phaseName = phaseName;
-        this.seconds = seconds;
+    public WorkoutPhase(String phase, int durationInSeconds){
+        this.phase = phase;
+        this.durationInSeconds = durationInSeconds;
     }
+    @Override
     public void run(){
-        System.out.println(" "+ phaseName+ " started ("+ seconds+ "s)");
+        System.out.println("\n>> " + phase + " started (" + durationInSeconds + "s)");
         try{
-            Thread.sleep(seconds * 1000);
+            Thread.sleep(durationInSeconds * 1000);
         } catch(InterruptedException e){
-            System.out.println(" " + phaseName+ " interrupted");
+            System.out.println(" "+ phase +" interrupted!");
         }
-        System.out.println(" "+phaseName + " ended.");
+        System.out.println(">> "+ phase +" completed.");
     }
 }
